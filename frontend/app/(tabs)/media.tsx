@@ -252,6 +252,71 @@ export default function MediaScreen() {
         }
       />
 
+      {/* Video Player Modal */}
+      <Modal
+        visible={showPlayerModal}
+        animationType="slide"
+        onRequestClose={() => setShowPlayerModal(false)}
+      >
+        <View style={styles.playerModalContainer}>
+          <View style={styles.playerHeader}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setShowPlayerModal(false)}
+            >
+              <Ionicons name="close" size={30} color="#FFF" />
+            </TouchableOpacity>
+          </View>
+          
+          {selectedVideo && (
+            <View style={styles.playerContent}>
+              <YoutubePlayer
+                height={250}
+                videoId={selectedVideo.id}
+                play={showPlayerModal}
+              />
+              
+              <View style={styles.playerInfo}>
+                <Text style={styles.playerTitle}>{selectedVideo.title}</Text>
+                <View style={styles.playerMeta}>
+                  <Ionicons name="person-circle-outline" size={18} color="#888" />
+                  <Text style={styles.playerChannel}>{selectedVideo.channelTitle}</Text>
+                </View>
+                
+                <View style={styles.playerActions}>
+                  <TouchableOpacity
+                    style={styles.playerActionButton}
+                    onPress={() => {
+                      handleLike(selectedVideo.id);
+                    }}
+                  >
+                    <Ionicons
+                      name={likedVideos.has(selectedVideo.id) ? 'heart' : 'heart-outline'}
+                      size={28}
+                      color={likedVideos.has(selectedVideo.id) ? '#FF6B35' : '#888'}
+                    />
+                    <Text style={[styles.playerActionText, likedVideos.has(selectedVideo.id) && styles.likedText]}>
+                      {likedVideos.has(selectedVideo.id) ? 'Liked' : 'Like'}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.playerActionButton}
+                    onPress={() => {
+                      setShowPlayerModal(false);
+                      setTimeout(() => openShareModal(selectedVideo), 300);
+                    }}
+                  >
+                    <Ionicons name="share-outline" size={28} color="#888" />
+                    <Text style={styles.playerActionText}>Share</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          )}
+        </View>
+      </Modal>
+
       {/* Share Modal */}
       <Modal
         visible={showShareModal}
