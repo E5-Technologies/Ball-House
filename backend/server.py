@@ -320,6 +320,7 @@ async def login(credentials: UserLogin):
             "username": user["username"],
             "email": user["email"],
             "profilePic": user.get("profilePic"),
+            "avatarUrl": user.get("avatarUrl"),
             "isPublic": user.get("isPublic", True),
             "currentCourtId": str(user["currentCourtId"]) if user.get("currentCourtId") else None
         }
