@@ -23,7 +23,6 @@ export default function ProfileScreen() {
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
-  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   
   // Generate diverse pixel art avatar options - 20 avatars with different races, genders, and styles
   const avatarOptions = [
