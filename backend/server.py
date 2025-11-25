@@ -605,6 +605,144 @@ async def send_message(message: MessageSend, authorization: Optional[str] = Head
         "read": False
     }
 
+# Networking Routes
+@api_router.post("/network/friend-request")
+async def send_friend_request(request: FriendRequest, authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization)
+    
+    # Check if request already exists
+    existing_request = await db.friend_requests.find_one({
+        "$or": [
+            {"fromUserId": ObjectId(user["_id"]), "toUserId": ObjectId(request.toUserId)},
+            {"fromUserId": ObjectId(request.toUserId), "toUserId": ObjectId(user["_id"])}
+        ]
+    })
+    
+    if existing_request:
+        if existing_request.get("status") == "accepted":
+            return {"status": "already_connected", "message": "You are already connected"}
+        return {"status": "pending", "message": "Friend request already sent"}
+    
+    # Create friend request
+    friend_request = {
+        "fromUserId": ObjectId(user["_id"]),
+        "toUserId": ObjectId(request.toUserId),
+        "status": "pending",
+        "createdAt": datetime.utcnow()
+    }
+    
+    await db.friend_requests.insert_one(friend_request)
+    return {"status": "success", "message": "Friend request sent"}
+
+@api_router.post("/network/accept/{request_id}")
+async def accept_friend_request(request_id: str, authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization)
+    
+    # Update request status
+    result = await db.friend_requests.update_one(
+        {"_id": ObjectId(request_id), "toUserId": ObjectId(user["_id"])},
+        {"$set": {"status": "accepted", "acceptedAt": datetime.utcnow()}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Friend request not found")
+    
+    return {"status": "success", "message": "Friend request accepted"}
+
+@api_router.get("/network/connections")
+async def get_connections(authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization)
+    user_id = ObjectId(user["_id"])
+    
+    # Get accepted friend requests (both directions)
+    connections = await db.friend_requests.find({
+        "$or": [
+            {"fromUserId": user_id, "status": "accepted"},
+            {"toUserId": user_id, "status": "accepted"}
+        ]
+    }).to_list(1000)
+    
+    # Get user details for each connection
+    connection_users = []
+    for conn in connections:
+        other_user_id = conn["toUserId"] if conn["fromUserId"] == user_id else conn["fromUserId"]
+        other_user = await db.users.find_one({"_id": other_user_id})
+        if other_user:
+            connection_users.append({
+                "id": str(other_user["_id"]),
+                "username": other_user["username"],
+                "profilePic": other_user.get("profilePic"),
+                "isConnected": True
+            })
+    
+    return connection_users
+
+@api_router.get("/network/recent-players")
+async def get_recent_players(authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization)
+    user_id = ObjectId(user["_id"])
+    
+    # Get user's current or recent court
+    current_user = await db.users.find_one({"_id": user_id})
+    if not current_user or not current_user.get("currentCourtId"):
+        # If no current court, find recent courts user has been to
+        # For now, return all public users as potential connections
+        public_users = await db.users.find({
+            "_id": {"$ne": user_id},
+            "isPublic": True
+        }).to_list(100)
+        
+        recent_players = []
+        for u in public_users:
+            # Check if already connected
+            is_connected = await db.friend_requests.find_one({
+                "$or": [
+                    {"fromUserId": user_id, "toUserId": u["_id"], "status": "accepted"},
+                    {"fromUserId": u["_id"], "toUserId": user_id, "status": "accepted"}
+                ]
+            })
+            
+            recent_players.append({
+                "id": str(u["_id"]),
+                "username": u["username"],
+                "profilePic": u.get("profilePic"),
+                "isConnected": bool(is_connected)
+            })
+        
+        return recent_players
+    
+    # Get other public users at the same court
+    court_id = current_user["currentCourtId"]
+    court = await db.courts.find_one({"_id": court_id})
+    
+    if not court or not court.get("publicUsersAtCourt"):
+        return []
+    
+    # Get user details for public users at court
+    recent_players = []
+    for user_id_at_court in court["publicUsersAtCourt"]:
+        if user_id_at_court == user_id:
+            continue
+            
+        other_user = await db.users.find_one({"_id": user_id_at_court})
+        if other_user:
+            # Check if already connected
+            is_connected = await db.friend_requests.find_one({
+                "$or": [
+                    {"fromUserId": user_id, "toUserId": other_user["_id"], "status": "accepted"},
+                    {"fromUserId": other_user["_id"], "toUserId": user_id, "status": "accepted"}
+                ]
+            })
+            
+            recent_players.append({
+                "id": str(other_user["_id"]),
+                "username": other_user["username"],
+                "profilePic": other_user.get("profilePic"),
+                "isConnected": bool(is_connected)
+            })
+    
+    return recent_players
+
 # Media/YouTube Routes
 @api_router.get("/media/youtube")
 async def get_youtube_videos(query: str = "NBA basketball highlights"):
