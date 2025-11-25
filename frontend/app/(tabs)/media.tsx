@@ -12,8 +12,9 @@ import {
   Modal,
   ScrollView,
   Dimensions,
+  Platform,
+  Linking,
 } from 'react-native';
-import YoutubePlayer from 'react-native-youtube-iframe';
 import { useAuth } from '../../contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
