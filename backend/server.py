@@ -357,6 +357,9 @@ async def update_profile(update: UserUpdate, authorization: Optional[str] = Head
         update_data["username"] = update.username
     if update.profilePic:
         update_data["profilePic"] = update.profilePic
+    if update.avatarUrl:
+        update_data["avatarUrl"] = update.avatarUrl
+        update_data["profilePic"] = update.avatarUrl  # Use avatarUrl as profilePic for display
     
     if update_data:
         await db.users.update_one(
@@ -370,6 +373,7 @@ async def update_profile(update: UserUpdate, authorization: Optional[str] = Head
         "username": updated_user["username"],
         "email": updated_user["email"],
         "profilePic": updated_user.get("profilePic"),
+        "avatarUrl": updated_user.get("avatarUrl"),
         "isPublic": updated_user.get("isPublic", True),
         "currentCourtId": str(updated_user["currentCourtId"]) if updated_user.get("currentCourtId") else None
     }
