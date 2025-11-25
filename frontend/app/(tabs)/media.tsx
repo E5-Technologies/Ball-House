@@ -215,9 +215,6 @@ export default function MediaScreen() {
     );
   };
 
-  const nbaNewsVideos = videos.slice(0, 2);
-  const trendingVideos = videos.slice(2, 6);
-
   return (
     <View style={styles.container}>
       {/* Search Bar */}
@@ -252,7 +249,19 @@ export default function MediaScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>NBA News</Text>
               <View style={styles.videoGrid}>
-                {nbaNewsVideos.map((video, index) => (
+                {nbaVideos.map((video, index) => (
+                  <View key={video.id} style={[styles.videoCardWrapper, index % 2 === 1 && styles.videoCardRight]}>
+                    {renderVideoCard({ item: video })}
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            {/* College News Section */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>College News</Text>
+              <View style={styles.videoGrid}>
+                {collegeVideos.map((video, index) => (
                   <View key={video.id} style={[styles.videoCardWrapper, index % 2 === 1 && styles.videoCardRight]}>
                     {renderVideoCard({ item: video })}
                   </View>
