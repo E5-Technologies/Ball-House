@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
-  Alert,
+  Switch,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
+import { Colors, BorderRadius, Spacing } from '../../constants/theme';
 
 const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
 
@@ -35,8 +36,9 @@ export default function MessagesScreen() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showUserList, setShowUserList] = useState(false);
-  const { token } = useAuth();
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [showNewMessageModal, setShowNewMessageModal] = useState(false);
+  const { token, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -87,44 +89,47 @@ export default function MessagesScreen() {
     return date.toLocaleDateString();
   };
 
-  const renderConversation = ({ item }: { item: Conversation }) => (
+  const renderConversationItem = ({ item }: { item: Conversation }) => (
     <TouchableOpacity
-      style={styles.conversationCard}
-      onPress={() => router.push(`/message/${item.userId}`)}
+      style={styles.conversationItem}
+      onPress={() => {
+        // Navigate to chat screen with user
+        console.log('Open chat with:', item.userId);
+      }}
     >
-      <View style={styles.avatarContainer}>
-        {item.profilePic ? (
-          <Image source={{ uri: item.profilePic }} style={styles.avatar} />
-        ) : (
-          <View style={styles.avatarPlaceholder}>
-            <Text style={styles.avatarText}>{getInitials(item.username)}</Text>
-          </View>
-        )}
-        {item.unreadCount > 0 && (
-          <View style={styles.unreadBadge}>
-            <Text style={styles.unreadText}>{item.unreadCount}</Text>
-          </View>
-        )}
-      </View>
+      {item.profilePic ? (
+        <Image source={{ uri: item.profilePic }} style={styles.avatar} />
+      ) : (
+        <View style={styles.avatarPlaceholder}>
+          <Text style={styles.avatarText}>{getInitials(item.username)}</Text>
+        </View>
+      )}
 
-      <View style={styles.conversationInfo}>
+      <View style={styles.conversationContent}>
         <View style={styles.conversationHeader}>
           <Text style={styles.username}>{item.username}</Text>
           <Text style={styles.timestamp}>{formatTimestamp(item.timestamp)}</Text>
         </View>
-        <Text style={styles.lastMessage} numberOfLines={1}>
-          {item.lastMessage}
-        </Text>
+        <View style={styles.messageRow}>
+          <Text style={styles.lastMessage} numberOfLines={1}>
+            {item.lastMessage}
+          </Text>
+          {item.unreadCount > 0 && (
+            <View style={styles.unreadBadge}>
+              <Text style={styles.unreadCount}>{item.unreadCount}</Text>
+            </View>
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   );
 
-  const renderUser = ({ item }: { item: User }) => (
+  const renderUserItem = ({ item }: { item: User }) => (
     <TouchableOpacity
-      style={styles.userCard}
+      style={styles.userItem}
       onPress={() => {
-        setShowUserList(false);
-        router.push(`/message/${item.id}`);
+        setShowNewMessageModal(false);
+        console.log('Start chat with:', item.id);
       }}
     >
       {item.profilePic ? (
@@ -138,60 +143,81 @@ export default function MessagesScreen() {
     </TouchableOpacity>
   );
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#FF6B35" />
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
-      {showUserList ? (
-        <View style={styles.container}>
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => setShowUserList(false)}>
-              <Ionicons name="arrow-back" size={24} color="#FFF" />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle}>New Message</Text>
-          </View>
-          <FlatList
-            data={users}
-            renderItem={renderUser}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.listContent}
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Messages</Text>
+        <View style={styles.privateToggle}>
+          <Text style={styles.privateLabel}>Private</Text>
+          <Switch
+            value={isPrivate}
+            onValueChange={setIsPrivate}
+            trackColor={{ false: '#D1D1D1', true: Colors.primary }}
+            thumbColor="#FFF"
           />
         </View>
+      </View>
+
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      ) : conversations.length === 0 ? (
+        <View style={styles.emptyContainer}>
+          <Ionicons name="chatbubbles-outline" size={80} color="#CCC" />
+          <Text style={styles.emptyTitle}>No Messages Yet</Text>
+          <Text style={styles.emptyText}>
+            Start a conversation with other players
+          </Text>
+          <TouchableOpacity
+            style={styles.newMessageButton}
+            onPress={() => setShowNewMessageModal(true)}
+          >
+            <Ionicons name="add" size={24} color="#FFF" />
+            <Text style={styles.newMessageButtonText}>New Message</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
-        <View style={styles.container}>
+        <>
           <FlatList
             data={conversations}
-            renderItem={renderConversation}
             keyExtractor={(item) => item.userId}
+            renderItem={renderConversationItem}
             contentContainerStyle={styles.listContent}
-            refreshing={loading}
-            onRefresh={fetchConversations}
-            ListEmptyComponent={
-              <View style={styles.emptyContainer}>
-                <Ionicons name="chatbubbles-outline" size={64} color="#555" />
-                <Text style={styles.emptyText}>No messages yet</Text>
-                <TouchableOpacity
-                  style={styles.emptyButton}
-                  onPress={() => setShowUserList(true)}
-                >
-                  <Text style={styles.emptyButtonText}>Start a conversation</Text>
-                </TouchableOpacity>
-              </View>
-            }
+            showsVerticalScrollIndicator={false}
           />
-          
+
+          {/* Floating New Message Button */}
           <TouchableOpacity
-            style={styles.fab}
-            onPress={() => setShowUserList(true)}
+            style={styles.floatingButton}
+            onPress={() => setShowNewMessageModal(true)}
           >
-            <Ionicons name="create" size={24} color="#FFF" />
+            <Ionicons name="create-outline" size={28} color="#FFF" />
           </TouchableOpacity>
+        </>
+      )}
+
+      {/* New Message Modal */}
+      {showNewMessageModal && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>New Message</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setShowNewMessageModal(false)}
+              >
+                <Ionicons name="close" size={28} color="#000" />
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={users}
+              keyExtractor={(item) => item.id}
+              renderItem={renderUserItem}
+              contentContainerStyle={styles.userListContent}
+            />
+          </View>
         </View>
       )}
     </View>
@@ -201,145 +227,208 @@ export default function MessagesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#FFFFFF',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#000000',
+  },
+  privateToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  privateLabel: {
+    fontSize: 16,
+    color: '#666',
+    fontWeight: '500',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000',
   },
-  header: {
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.xl,
+  },
+  emptyTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#000',
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.sm,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: Spacing.xl,
+  },
+  newMessageButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    gap: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    backgroundColor: Colors.primary,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.lg,
+    gap: 8,
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  newMessageButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
     color: '#FFF',
   },
   listContent: {
-    flexGrow: 1,
-    paddingBottom: 80,
+    paddingVertical: Spacing.sm,
   },
-  conversationCard: {
+  conversationItem: {
     flexDirection: 'row',
-    padding: 16,
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
-  avatarContainer: {
-    position: 'relative',
+    borderBottomColor: '#F5F5F5',
   },
   avatar: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#333',
+    marginRight: Spacing.md,
   },
   avatarPlaceholder: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#FF6B35',
+    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: Spacing.md,
   },
   avatarText: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#FFF',
   },
-  unreadBadge: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    backgroundColor: '#FF6B35',
-    borderRadius: 12,
-    minWidth: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 6,
-  },
-  unreadText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#FFF',
-  },
-  conversationInfo: {
+  conversationContent: {
     flex: 1,
-    marginLeft: 12,
-    justifyContent: 'center',
   },
   conversationHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 4,
   },
   username: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FFF',
+    color: '#000',
   },
   timestamp: {
-    fontSize: 12,
-    color: '#888',
+    fontSize: 13,
+    color: '#999',
+  },
+  messageRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   lastMessage: {
     fontSize: 14,
-    color: '#888',
+    color: '#666',
+    flex: 1,
   },
-  userCard: {
-    flexDirection: 'row',
+  unreadBadge: {
+    backgroundColor: Colors.primary,
+    minWidth: 20,
+    height: 20,
+    borderRadius: 10,
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    gap: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    paddingHorizontal: 6,
+    marginLeft: 8,
   },
-  fab: {
+  unreadCount: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  floatingButton: {
     position: 'absolute',
-    right: 16,
-    bottom: 16,
+    bottom: 24,
+    right: 24,
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#FF6B35',
+    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowRadius: 8,
+    elevation: 8,
   },
-  emptyContainer: {
-    flex: 1,
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: '80%',
+    paddingBottom: 32,
+  },
+  modalHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  closeButton: {
+    width: 44,
+    height: 44,
     justifyContent: 'center',
-    paddingVertical: 64,
-    paddingHorizontal: 32,
+    alignItems: 'center',
+    borderRadius: 22,
+    backgroundColor: '#F5F5F5',
   },
-  emptyText: {
-    fontSize: 18,
-    color: '#555',
-    marginTop: 16,
-    marginBottom: 24,
+  userListContent: {
+    paddingVertical: Spacing.sm,
   },
-  emptyButton: {
-    backgroundColor: '#FF6B35',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 24,
-  },
-  emptyButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFF',
+  userItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
   },
 });
