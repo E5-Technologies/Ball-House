@@ -5,7 +5,7 @@ export const LoadingScreen = () => {
   return (
     <View style={styles.container}>
       <Image 
-        source={require('../assets/bh-logo.png')} 
+        source={require('../assets/ball-house-logo.png')} 
         style={styles.logo}
         resizeMode="contain"
       />
