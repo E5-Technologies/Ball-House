@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   courtCard: {
-    backgroundColor: '#000000',
+    backgroundColor: '#F8F8F8',
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
