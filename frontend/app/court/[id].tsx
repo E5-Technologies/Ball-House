@@ -26,6 +26,7 @@ interface Court {
   phoneNumber: string;
   rating: number;
   currentPlayers: number;
+  averagePlayers: number;
   image?: string;
 }
 
