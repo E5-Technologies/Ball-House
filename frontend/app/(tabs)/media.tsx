@@ -234,13 +234,6 @@ export default function MediaScreen() {
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Promotional Banner */}
-        <View style={styles.banner}>
-          <Text style={styles.bannerText}>
-            Stream Top Sports News!{'\n'}Post & Share Highlights
-          </Text>
-        </View>
-
         {loading ? (
           <ActivityIndicator size="large" color={Colors.primary} style={styles.loader} />
         ) : (
@@ -249,8 +242,8 @@ export default function MediaScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>NBA News</Text>
               <View style={styles.videoGrid}>
-                {nbaVideos.map((video, index) => (
-                  <View key={video.id} style={[styles.videoCardWrapper, index % 2 === 1 && styles.videoCardRight]}>
+                {nbaVideos.map((video) => (
+                  <View key={video.id} style={styles.videoCardWrapper}>
                     {renderVideoCard({ item: video })}
                   </View>
                 ))}
@@ -261,8 +254,8 @@ export default function MediaScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>College News</Text>
               <View style={styles.videoGrid}>
-                {collegeVideos.map((video, index) => (
-                  <View key={video.id} style={[styles.videoCardWrapper, index % 2 === 1 && styles.videoCardRight]}>
+                {collegeVideos.map((video) => (
+                  <View key={video.id} style={styles.videoCardWrapper}>
                     {renderVideoCard({ item: video })}
                   </View>
                 ))}
@@ -273,8 +266,8 @@ export default function MediaScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Trending Videos</Text>
               <View style={styles.videoGrid}>
-                {trendingVideos.map((video, index) => (
-                  <View key={video.id} style={[styles.videoCardWrapper, index % 2 === 1 && styles.videoCardRight]}>
+                {trendingVideos.map((video) => (
+                  <View key={video.id} style={styles.videoCardWrapper}>
                     {renderVideoCard({ item: video })}
                   </View>
                 ))}
