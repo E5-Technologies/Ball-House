@@ -40,22 +40,22 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="media"
-        options={{
-          title: 'Media',
-          headerTitle: 'Basketball Media',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="play-circle" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="index"
         options={{
           title: 'Courts',
           headerTitle: 'Find Courts',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="location" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="media"
+        options={{
+          title: 'Media',
+          headerTitle: 'Basketball Media',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="play-circle" size={size} color={color} />
           ),
         }}
       />
