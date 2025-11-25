@@ -295,6 +295,7 @@ async def register(user: UserRegister):
             "username": user.username,
             "email": user.email,
             "profilePic": None,
+            "avatarUrl": None,
             "isPublic": True,
             "currentCourtId": None
         }
