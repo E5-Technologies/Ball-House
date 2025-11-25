@@ -42,6 +42,8 @@ export default function CourtsScreen() {
   const [loading, setLoading] = useState(true);
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCourt, setSelectedCourt] = useState<Court | null>(null);
+  const [showMap, setShowMap] = useState(Platform.OS !== 'web'); // Show map on mobile, list on web
   const { token, user } = useAuth();
   const router = useRouter();
 
