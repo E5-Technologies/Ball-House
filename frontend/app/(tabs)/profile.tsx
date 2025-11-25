@@ -170,8 +170,8 @@ export default function ProfileScreen() {
         {/* Stats Section */}
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
-            <Text style={styles.statValue}>127</Text>
-            <Text style={styles.statLabel}>Followers</Text>
+            <Text style={styles.statValue}>{networkCount}</Text>
+            <Text style={styles.statLabel}>Network</Text>
           </View>
         </View>
 
