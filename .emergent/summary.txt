@@ -1,0 +1,92 @@
+<analysis>
+The user's language is English. All future responses should be in English.
+
+I have analyzed the entire development trajectory of the basketball social networking application. The process began with the user providing a detailed app description and designs. The initial phase involved clarifying requirements, such as API keys (Mapbox, YouTube) and implementation details for features like player heat maps and messaging.
+
+The development proceeded in stages, starting with a full-stack implementation. The backend was built using FastAPI and MongoDB, with endpoints for user authentication, basketball court data, messaging, and YouTube video fetching. The frontend was built with Expo (React Native), utilizing file-based routing with .
+
+A significant portion of the development involved iterative attempts to implement a map feature using . This led to a series of platform-specific compatibility issues, particularly between the web preview and the native mobile (Expo Go) environment. After multiple attempts to fix native errors and web rendering problems, the map feature was ultimately removed in favor of a stable, cross-platform list view to resolve persistent mobile errors.
+
+Subsequent work focused on refining existing features and adding new ones based on user requests: enhancing the heat map visualization on the list view, adding average player counts, creating a new Networking tab with friend and recent player lists, implementing in-app video playback, reordering the navigation tabs multiple times, and finally, beginning the implementation of a pixelated avatar selection system for user profiles. The work was interrupted just as the avatar feature was being implemented on the profile screen.
+</analysis>
+
+<product_requirements>
+The goal is to build an iOS mobile app for basketball players.
+
+**Core Features Implemented:**
+-   **User Profiles:** Simplified user registration and login. Profiles include a username and a toggle for public or private status.
+-   **Court Finder (List View):** A central tab displays a list of basketball courts in Houston, TX. Each list item shows the court's name, address, current player count, and average player count.
+-   **Heat Map (List-based):** The current player count is visualized through color-coded status badges on each court in the list (e.g., green for Light, orange for Moderate, red for Busy).
+-   **Networking:** A dedicated tab with two sections: My Network (for confirmed friend connections) and Recent Players (showing public users recently at the same location).
+-   **Media Content:** A tab that fetches and displays basketball videos from YouTube. Users can like videos and share them with other users via the in-app messaging system. Videos play directly within the app in a modal.
+-   **Messaging:** Basic functionality for users to send and receive messages.
+-   **Tab Navigation:** A five-tab layout: Networking, Messages, Courts (center), Media, and Profile.
+
+**Feature Attempted & Removed:**
+-   An interactive map view for finding courts was a key initial requirement. However, due to persistent technical errors with  on mobile, it was removed to ensure the app's stability. The app now defaults to a list-only view.
+
+**Current Feature Request:**
+-   Users should be able to select a pixelated character as their profile picture from a predefined gallery, similar to the provided design.
+</product_requirements>
+
+<key_technical_concepts>
+- **Frameworks:** Expo (React Native) for the frontend, FastAPI (Python) for the backend.
+- **Database:** MongoDB.
+- **Routing:** File-based routing with .
+- **State Management:** React Context () for authentication state.
+- **APIs & Services:**
+  - YouTube Data API v3 (for fetching videos).
+  - DiceBear Avatars API (for pixelated profile pictures).
+- **Platform-Specific Development:** Encountered and handled issues where components () were incompatible with the web environment, leading to a mobile-first, list-view-only approach.
+</key_technical_concepts>
+
+<code_architecture>
+The application follows a standard full-stack monorepo structure with a  Expo app and a  FastAPI server.
+
+**Directory Structure:**
+
+
+**Key Files:**
+
+-   ****:
+    -   **Importance:** This is the heart of the backend. It defines all API endpoints, data models (using Pydantic), and database logic for users, courts, messages, networking (friends/recent players), and YouTube videos.
+    -   **Changes:** It was created and then heavily modified to add  to courts, endpoints for friend requests, and tracking recent players.
+
+-   ****:
+    -   **Importance:** This file configures the main tab navigation for the app using Expo Router's  component. It defines the order, icons, and titles for each tab.
+    -   **Changes:** This file was edited multiple times to reorder the tabs to the user's final desired layout: Networking, Messages, Courts (center), Media, Profile.
+
+-   ****:
+    -   **Importance:** This is the Find Courts screen. It fetches and displays the list of basketball courts.
+    -   **Changes:** This file underwent the most significant churn. It was initially built with a map/list toggle, then refactored multiple times to handle web/mobile platform differences, and finally stripped of all map-related code to be a stable, list-only view. The UI was then enhanced to include more prominent heat map color badges and to display the average player count.
+
+-   ****:
+    -   **Importance:** This screen fetches and displays YouTube videos.
+    -   **Changes:** It was significantly updated to remove the external Watch button and implement an in-app video player using a modal and . Like and Share (via messages) functionality was also added.
+
+-   ****:
+    -   **Importance:** A new screen created to fulfill the networking requirement.
+    -   **Changes:** Created from scratch to include a toggle between two views: My Network (confirmed friends) and Recent Players, fetching data from the new backend endpoints.
+
+-   ****:
+    -   **Importance:** Displays the user's profile and allows them to toggle their public/private status.
+    -   **Changes:** Was being modified to add a pixel art avatar selection feature using the DiceBear Avatars API. The implementation of a modal and state for avatar selection was in progress.
+</code_architecture>
+
+<pending_tasks>
+- Complete the implementation of the pixelated avatar selection feature on the user profile screen. This includes adding the avatar selection modal, handling the API call to DiceBear, and saving the selected avatar URL to the user's profile.
+</pending_tasks>
+
+<current_work>
+Immediately before this summary, the task was to implement a feature allowing users to select a pixelated character as their profile picture, based on a design provided by the user.
+
+The plan was to use the DiceBear Avatars API (pixel-art style) to generate and display a gallery of avatars for the user to choose from.
+
+Work had just begun on the file . The first step taken was to import necessary components like , , , and  to build the avatar selection interface.
+
+The implementation was paused right after this initial edit. The next steps were to add the state management for the modal's visibility and the list of avatar options. The backend logic to save the chosen avatar URL to the user's profile has not yet been implemented.
+</current_work>
+
+<optional_next_step>
+I will continue implementing the pixelated avatar feature by adding the avatar selection state and the modal component to .
+</optional_next_step>
