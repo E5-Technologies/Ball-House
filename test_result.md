@@ -210,6 +210,18 @@ backend:
           agent: "testing"
           comment: "✅ COMPREHENSIVE TESTING PASSED: YouTube API integration working perfectly. Default query returns 20 basketball videos with all required fields (id, title, thumbnail, channelTitle). Custom queries (e.g., 'NBA basketball') work correctly. All video data properly formatted and includes necessary metadata."
 
+  - task: "Pixelated Avatar Selection"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Implemented avatar selection feature: Added avatarUrl field to UserUpdate and UserResponse models. Updated /users/profile endpoint to accept and store avatarUrl. When avatarUrl is provided, it's saved and used as profilePic for display. Updated register, login, and auth/me endpoints to include avatarUrl in responses."
+
 frontend:
   - task: "Authentication Screens (Login/Register)"
     implemented: true
