@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 24,
     paddingHorizontal: Spacing.md,
@@ -362,12 +362,6 @@ const styles = StyleSheet.create({
   },
   statItem: {
     alignItems: 'center',
-    flex: 1,
-  },
-  statDivider: {
-    width: 1,
-    height: 40,
-    backgroundColor: '#E0E0E0',
   },
   statValue: {
     fontSize: 24,
