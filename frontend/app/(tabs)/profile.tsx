@@ -59,6 +59,29 @@ export default function ProfileScreen() {
     return username.substring(0, 2).toUpperCase();
   };
 
+  const handleSelectAvatar = async (avatarUrl: string) => {
+    try {
+      setUploading(true);
+      
+      const response = await axios.put(
+        `${API_URL}/api/users/profile`,
+        { avatarUrl: avatarUrl },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      
+      updateUser({ profilePic: avatarUrl, avatarUrl: avatarUrl });
+      setShowAvatarModal(false);
+      Alert.alert('Success', 'Avatar updated successfully!');
+    } catch (error) {
+      console.error('Error updating avatar:', error);
+      Alert.alert('Error', 'Failed to update avatar');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleTogglePrivacy = async () => {
     try {
       const response = await axios.put(
