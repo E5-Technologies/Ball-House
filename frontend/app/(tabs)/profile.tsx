@@ -24,17 +24,35 @@ export default function ProfileScreen() {
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   
-  // Generate pixel art avatar URLs using DiceBear API
-  const avatarSeeds = [
-    'Felix', 'Aneka', 'Brooklynn', 'Callie', 'Chance', 'Chester', 
-    'Cleo', 'Coco', 'Cuddles', 'Daisy', 'Felix2', 'Fluffy',
-    'Garfield', 'George', 'Ginger', 'Gizmo', 'Gracie', 'Harley',
-    'Jasper', 'Kiki', 'Kitty', 'Leo', 'Lily', 'Loki'
+  // Generate diverse pixel art avatar options - 20 avatars with different races, genders, and styles
+  const avatarOptions = [
+    // Different skin tones, hair styles, and accessories for diversity
+    { seed: 'avatar1', backgroundColor: 'FFD5B4' }, // Light skin tone
+    { seed: 'avatar2', backgroundColor: 'F1C27D' }, // Medium light
+    { seed: 'avatar3', backgroundColor: 'E0AC69' }, // Medium
+    { seed: 'avatar4', backgroundColor: 'C68642' }, // Medium dark
+    { seed: 'avatar5', backgroundColor: '8D5524' }, // Dark
+    { seed: 'avatar6', backgroundColor: 'FFDBAC' }, // Light with different style
+    { seed: 'avatar7', backgroundColor: 'F0C8A0' }, // Medium light with accessories
+    { seed: 'avatar8', backgroundColor: 'D2A679' }, // Medium with different hair
+    { seed: 'avatar9', backgroundColor: 'B08862' }, // Medium dark female
+    { seed: 'avatar10', backgroundColor: '704D3A' }, // Dark male
+    { seed: 'avatar11', backgroundColor: 'FFE0BD' }, // Female light
+    { seed: 'avatar12', backgroundColor: 'EDB98A' }, // Female medium
+    { seed: 'avatar13', backgroundColor: 'D19D6F' }, // Female medium dark
+    { seed: 'avatar14', backgroundColor: 'A17350' }, // Male medium dark
+    { seed: 'avatar15', backgroundColor: '634332' }, // Male dark
+    { seed: 'avatar16', backgroundColor: 'FFDFC4' }, // Different style light
+    { seed: 'avatar17', backgroundColor: 'E6B88F' }, // Different style medium
+    { seed: 'avatar18', backgroundColor: 'C99A6E' }, // Different style medium dark
+    { seed: 'avatar19', backgroundColor: '9F7A5C' }, // Different accessories dark
+    { seed: 'avatar20', backgroundColor: '5C3D2E' }, // Diverse style very dark
   ];
   
-  const generateAvatarUrl = (seed: string) => {
-    return `https://api.dicebear.com/7.x/pixel-art/png?seed=${seed}&size=200&backgroundColor=5B7C99`;
+  const generateAvatarUrl = (seed: string, backgroundColor: string) => {
+    return `https://api.dicebear.com/7.x/pixel-art/png?seed=${seed}&size=200&backgroundColor=${backgroundColor}`;
   };
 
   const getInitials = (username: string) => {
