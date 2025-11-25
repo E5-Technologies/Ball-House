@@ -535,7 +535,6 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#FFF',
   },
   playerBadge: {
     flexDirection: 'row',
