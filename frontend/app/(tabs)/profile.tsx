@@ -8,6 +8,8 @@ import {
   Switch,
   Alert,
   ScrollView,
+  Modal,
+  FlatList,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../../contexts/AuthContext';
