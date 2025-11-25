@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
   markerContainer: {
     alignItems: 'center',
   },
-  playerBadge: {
+  mapPlayerBadge: {
     backgroundColor: Colors.primary,
     borderRadius: 20,
     minWidth: 40,
