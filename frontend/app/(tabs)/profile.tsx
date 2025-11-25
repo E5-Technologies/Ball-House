@@ -104,45 +104,6 @@ export default function ProfileScreen() {
     }
   };
 
-  const pickImage = async () => {
-    try {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission Required', 'Camera roll permission is required to change profile picture');
-        return;
-      }
-
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 0.5,
-        base64: true,
-      });
-
-      if (!result.canceled && result.assets[0].base64) {
-        setUploading(true);
-        const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
-        
-        const response = await axios.put(
-          `${API_URL}/api/users/profile`,
-          { profilePic: base64Image },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        
-        updateUser({ profilePic: base64Image });
-        Alert.alert('Success', 'Profile picture updated');
-      }
-    } catch (error) {
-      console.error('Error updating profile picture:', error);
-      Alert.alert('Error', 'Failed to update profile picture');
-    } finally {
-      setUploading(false);
-    }
-  };
-
   const handleLogout = () => {
     Alert.alert(
       'Logout',
