@@ -30,12 +30,12 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="networking"
         options={{
-          title: 'Courts',
-          headerTitle: 'Find Courts',
+          title: 'Network',
+          headerTitle: 'Networking',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="map" size={size} color={color} />
+            <Ionicons name="people" size={size} color={color} />
           ),
         }}
       />
@@ -46,6 +46,16 @@ export default function TabLayout() {
           headerTitle: 'Basketball Media',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="play-circle" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Courts',
+          headerTitle: 'Find Courts',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="location" size={size} color={color} />
           ),
         }}
       />
