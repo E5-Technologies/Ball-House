@@ -43,7 +43,9 @@ interface User {
 }
 
 export default function MediaScreen() {
-  const [videos, setVideos] = useState<Video[]>([]);
+  const [nbaVideos, setNbaVideos] = useState<Video[]>([]);
+  const [collegeVideos, setCollegeVideos] = useState<Video[]>([]);
+  const [trendingVideos, setTrendingVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [likedVideos, setLikedVideos] = useState<Set<string>>(new Set());
@@ -54,25 +56,68 @@ export default function MediaScreen() {
   const { token } = useAuth();
 
   useEffect(() => {
-    fetchVideos();
+    fetchAllVideos();
     fetchUsers();
   }, []);
 
-  const fetchVideos = async (query?: string) => {
+  const fetchAllVideos = async () => {
     setLoading(true);
     try {
-      const searchTerm = query || 'NBA basketball highlights';
+      // Fetch NBA News
+      const nbaResponse = await axios.get(`${API_URL}/api/media/youtube`, {
+        params: { query: 'NBA basketball news highlights' },
+      });
+      const nbaWithLikes = nbaResponse.data.slice(0, 4).map((video: Video) => ({
+        ...video,
+        likes: Math.floor(Math.random() * 20) + 1
+      }));
+      setNbaVideos(nbaWithLikes);
+
+      // Fetch College Basketball News
+      const collegeResponse = await axios.get(`${API_URL}/api/media/youtube`, {
+        params: { query: 'college basketball highlights March Madness' },
+      });
+      const collegeWithLikes = collegeResponse.data.slice(0, 4).map((video: Video) => ({
+        ...video,
+        likes: Math.floor(Math.random() * 20) + 1
+      }));
+      setCollegeVideos(collegeWithLikes);
+
+      // Fetch Trending Basketball Videos
+      const trendingResponse = await axios.get(`${API_URL}/api/media/youtube`, {
+        params: { query: 'basketball viral highlights trending' },
+      });
+      const trendingWithLikes = trendingResponse.data.slice(0, 4).map((video: Video) => ({
+        ...video,
+        likes: Math.floor(Math.random() * 20) + 1
+      }));
+      setTrendingVideos(trendingWithLikes);
+
+    } catch (error) {
+      console.error('Error fetching videos:', error);
+      Alert.alert('Error', 'Failed to load videos');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchVideos = async (query: string) => {
+    setLoading(true);
+    try {
       const response = await axios.get(`${API_URL}/api/media/youtube`, {
-        params: { query: searchTerm },
+        params: { query: query },
       });
       
       // Add random like counts for demo
-      const videosWithLikes = response.data.map((video: Video) => ({
+      const videosWithLikes = response.data.slice(0, 12).map((video: Video) => ({
         ...video,
         likes: Math.floor(Math.random() * 20) + 1
       }));
       
-      setVideos(videosWithLikes);
+      // Distribute videos across categories for search results
+      setNbaVideos(videosWithLikes.slice(0, 4));
+      setCollegeVideos(videosWithLikes.slice(4, 8));
+      setTrendingVideos(videosWithLikes.slice(8, 12));
     } catch (error) {
       console.error('Error fetching videos:', error);
       Alert.alert('Error', 'Failed to load videos');
