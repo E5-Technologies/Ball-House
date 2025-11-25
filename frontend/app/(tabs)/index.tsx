@@ -187,40 +187,20 @@ export default function MapScreen() {
         )}
       </View>
 
-      {viewMode === 'list' ? (
-        <FlatList
-          data={filteredCourts}
-          renderItem={renderCourtItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContent}
-          refreshing={loading}
-          onRefresh={fetchCourts}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Ionicons name="basketball-outline" size={64} color="#555" />
-              <Text style={styles.emptyText}>No courts found</Text>
-            </View>
-          }
-        />
-      ) : !IS_WEB && MapView ? (
-        <View style={styles.mapContainer}>
-          <MapView
-            ref={mapRef}
-            style={styles.map}
-            provider={PROVIDER_DEFAULT}
-            initialRegion={{
-              latitude: location?.coords.latitude || 29.7604,
-              longitude: location?.coords.longitude || -95.3698,
-              latitudeDelta: 0.2,
-              longitudeDelta: 0.2,
-            }}
-            showsUserLocation
-            showsMyLocationButton
-          >
-            {filteredCourts.map(court => renderMapMarker(court))}
-          </MapView>
-        </View>
-      ) : (
+      <FlatList
+        data={filteredCourts}
+        renderItem={renderCourtItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContent}
+        refreshing={loading}
+        onRefresh={fetchCourts}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Ionicons name="basketball-outline" size={64} color="#555" />
+            <Text style={styles.emptyText}>No courts found</Text>
+          </View>
+        }
+        ListHeaderComponent={(
         <ScrollView contentContainerStyle={styles.mapPreviewContainer}>
           <View style={styles.mapPreviewHeader}>
             <Ionicons name="map" size={80} color="#FF6B35" />
