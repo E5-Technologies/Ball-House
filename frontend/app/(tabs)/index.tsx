@@ -72,11 +72,11 @@ export default function CourtsScreen() {
   };
 
   const getPlayerColor = (count: number) => {
-    if (count === 0) return '#555';
-    if (count <= 5) return '#4CAF50';
-    if (count <= 15) return '#FFC107';
-    if (count <= 25) return '#FF9800';
-    return '#F44336';
+    if (count === 0) return Colors.heatEmpty;
+    if (count <= 5) return Colors.heatLow;
+    if (count <= 15) return Colors.heatMedium;
+    if (count <= 25) return Colors.heatHigh;
+    return Colors.heatVeryHigh;
   };
 
   const getPlayerStatus = (count: number) => {
