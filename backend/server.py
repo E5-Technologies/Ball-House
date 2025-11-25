@@ -151,6 +151,7 @@ async def initialize_courts():
                 "phoneNumber": "713-400-7336",
                 "rating": 4.5,
                 "currentPlayers": 0,
+                "averagePlayers": 18,
                 "publicUsersAtCourt": [],
                 "image": None
             },
@@ -163,6 +164,7 @@ async def initialize_courts():
                 "phoneNumber": "713-526-7867",
                 "rating": 4.8,
                 "currentPlayers": 0,
+                "averagePlayers": 22,
                 "publicUsersAtCourt": [],
                 "image": None
             },
@@ -175,6 +177,7 @@ async def initialize_courts():
                 "phoneNumber": "713-863-8403",
                 "rating": 4.6,
                 "currentPlayers": 0,
+                "averagePlayers": 15,
                 "publicUsersAtCourt": [],
                 "image": None
             },
@@ -187,6 +190,7 @@ async def initialize_courts():
                 "phoneNumber": "713-650-3022",
                 "rating": 4.3,
                 "currentPlayers": 0,
+                "averagePlayers": 12,
                 "publicUsersAtCourt": [],
                 "image": None
             },
@@ -199,6 +203,7 @@ async def initialize_courts():
                 "phoneNumber": "713-526-2183",
                 "rating": 4.7,
                 "currentPlayers": 0,
+                "averagePlayers": 20,
                 "publicUsersAtCourt": [],
                 "image": None
             },
@@ -211,6 +216,7 @@ async def initialize_courts():
                 "phoneNumber": "713-752-0314",
                 "rating": 4.4,
                 "currentPlayers": 0,
+                "averagePlayers": 14,
                 "publicUsersAtCourt": [],
                 "image": None
             },
@@ -223,6 +229,7 @@ async def initialize_courts():
                 "phoneNumber": "713-845-1000",
                 "rating": 4.2,
                 "currentPlayers": 0,
+                "averagePlayers": 10,
                 "publicUsersAtCourt": [],
                 "image": None
             },
@@ -235,6 +242,7 @@ async def initialize_courts():
                 "phoneNumber": "713-747-7234",
                 "rating": 4.1,
                 "currentPlayers": 0,
+                "averagePlayers": 8,
                 "publicUsersAtCourt": [],
                 "image": None
             }
