@@ -98,12 +98,14 @@ class UserResponse(BaseModel):
     username: str
     email: str
     profilePic: Optional[str] = None
+    avatarUrl: Optional[str] = None
     isPublic: bool = True
     currentCourtId: Optional[str] = None
 
 class UserUpdate(BaseModel):
     username: Optional[str] = None
     profilePic: Optional[str] = None
+    avatarUrl: Optional[str] = None
 
 class CourtResponse(BaseModel):
     id: str
