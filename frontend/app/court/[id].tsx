@@ -249,23 +249,23 @@ export default function CourtDetailsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#FFFFFF',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000',
+    backgroundColor: '#FFFFFF',
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000',
+    backgroundColor: '#FFFFFF',
   },
   errorText: {
     fontSize: 18,
-    color: '#888',
+    color: '#666',
   },
   header: {
     flexDirection: 'row',
@@ -273,8 +273,9 @@ const styles = StyleSheet.create({
     paddingTop: 48,
     paddingBottom: 16,
     paddingHorizontal: 16,
+    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: '#E0E0E0',
   },
   backButton: {
     marginRight: 16,
@@ -282,7 +283,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#000',
   },
   content: {
     flex: 1,
