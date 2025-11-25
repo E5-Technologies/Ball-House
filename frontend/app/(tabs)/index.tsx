@@ -139,7 +139,7 @@ export default function CourtsScreen() {
           </View>
           {distance && (
             <View style={styles.distanceContainer}>
-              <Ionicons name="location" size={18} color="#4A90E2" />
+              <Ionicons name="location" size={18} color={Colors.primary} />
               <Text style={styles.distanceText}>{distance}</Text>
               <Text style={styles.distanceLabel}>mi</Text>
             </View>
