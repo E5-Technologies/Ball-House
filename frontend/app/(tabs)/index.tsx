@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#333',
+    backgroundColor: '#E0E0E0',
     marginVertical: 12,
   },
   courtFooter: {
