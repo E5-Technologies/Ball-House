@@ -485,4 +485,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
   },
+  directionsButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    borderRadius: 12,
+    gap: 12,
+    marginBottom: 20,
+  },
+  directionsButtonText: {
+    fontSize: 16,
+    color: '#FFF',
+    fontWeight: '600',
+  },
 });
