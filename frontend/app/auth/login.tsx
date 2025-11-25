@@ -46,11 +46,11 @@ export default function Login() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Logo Header */}
         <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <Ionicons name="location" size={60} color="#4B00FF" style={styles.icon} />
-            <Text style={styles.brandText}>BH</Text>
-          </View>
-          <Text style={styles.networkText}>NETWORK</Text>
+          <Image 
+            source={require('../../assets/bh-logo.png')} 
+            style={styles.logo}
+            resizeMode="contain"
+          />
           <Text style={styles.subtitle}>Find your game</Text>
         </View>
 
