@@ -118,26 +118,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 48,
   },
-  logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  icon: {
-    marginRight: -8,
-  },
-  brandText: {
-    fontSize: 56,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    letterSpacing: 2,
-  },
-  networkText: {
-    fontSize: 18,
-    color: '#FFFFFF',
-    fontWeight: '400',
-    letterSpacing: 3,
-    marginBottom: 8,
+  logo: {
+    width: 200,
+    height: 150,
+    marginBottom: 16,
   },
   subtitle: {
     fontSize: 16,
