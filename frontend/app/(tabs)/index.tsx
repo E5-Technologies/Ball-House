@@ -137,7 +137,7 @@ export default function CourtsScreen() {
         {/* Court Icon Circle */}
         <View style={styles.courtIconContainer}>
           <View style={styles.iconCircle}>
-            <Ionicons name="basketball-outline" size={32} color={Colors.primary} />
+            <Ionicons name="people" size={32} color={Colors.primary} />
           </View>
           
           {/* Player Count Badge */}
