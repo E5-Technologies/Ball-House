@@ -341,13 +341,13 @@ export default function CourtsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#FFFFFF',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000',
+    backgroundColor: '#FFFFFF',
   },
   loadingText: {
     color: '#888',
@@ -357,20 +357,20 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#000000',
     margin: 16,
     paddingHorizontal: 16,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#333',
+    borderRadius: 25,
+    borderWidth: 0,
   },
   searchIcon: {
     marginRight: 8,
+    color: '#FFFFFF',
   },
   searchInput: {
     flex: 1,
     height: 48,
-    color: '#FFF',
+    color: '#FFFFFF',
     fontSize: 16,
   },
   listContent: {
@@ -378,12 +378,11 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   courtCard: {
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#000000',
     borderRadius: 16,
     padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#333',
+    marginBottom: 16,
+    borderWidth: 0,
     position: 'relative',
     overflow: 'hidden',
   },
