@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,22 @@ export default function ProfileScreen() {
   const router = useRouter();
   const [uploading, setUploading] = useState(false);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [networkCount, setNetworkCount] = useState(0);
+
+  useEffect(() => {
+    fetchNetworkCount();
+  }, []);
+
+  const fetchNetworkCount = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/network/connections`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setNetworkCount(response.data.length);
+    } catch (error) {
+      console.error('Error fetching network count:', error);
+    }
+  };
   
   // Generate diverse pixel art avatar options - 20 avatars with different races, genders, and styles
   const avatarOptions = [
