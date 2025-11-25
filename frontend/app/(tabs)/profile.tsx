@@ -157,16 +157,6 @@ export default function ProfileScreen() {
             <Text style={styles.statValue}>127</Text>
             <Text style={styles.statLabel}>Followers</Text>
           </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>48</Text>
-            <Text style={styles.statLabel}>Games</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>32</Text>
-            <Text style={styles.statLabel}>Wins</Text>
-          </View>
         </View>
 
         {/* Menu Items */}
