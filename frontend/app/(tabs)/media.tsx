@@ -146,10 +146,10 @@ export default function MediaScreen() {
 
     return (
       <View style={styles.videoCard}>
-        <TouchableOpacity onPress={() => openVideo(item.id)}>
+        <TouchableOpacity onPress={() => openVideoPlayer(item)}>
           <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
           <View style={styles.playIconContainer}>
-            <Ionicons name="play-circle" size={48} color="rgba(255,255,255,0.9)" />
+            <Ionicons name="play-circle" size={64} color="rgba(255,107,53,0.9)" />
           </View>
         </TouchableOpacity>
         
@@ -185,14 +185,6 @@ export default function MediaScreen() {
             >
               <Ionicons name="share-outline" size={24} color="#888" />
               <Text style={styles.actionText}>Share</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => openVideo(item.id)}
-            >
-              <Ionicons name="open-outline" size={24} color="#888" />
-              <Text style={styles.actionText}>Watch</Text>
             </TouchableOpacity>
           </View>
         </View>
