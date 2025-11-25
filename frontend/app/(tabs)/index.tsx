@@ -184,13 +184,6 @@ export default function CourtsScreen() {
     );
   }
 
-  // Prepare heatmap data from courts
-  const heatmapPoints = courts.map(court => ({
-    latitude: court.latitude,
-    longitude: court.longitude,
-    weight: court.currentPlayers || 1,
-  }));
-
   // Map view for mobile
   const renderMapView = () => (
     <View style={styles.container}>
