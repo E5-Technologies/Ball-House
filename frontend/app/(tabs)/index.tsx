@@ -451,9 +451,9 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   ratingText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFD700',
+    fontSize: 12,
+    color: '#666',
+    marginLeft: 4,
   },
   courtAddress: {
     fontSize: 13,
