@@ -455,6 +455,30 @@ const styles = StyleSheet.create({
     color: '#666',
     marginLeft: 4,
   },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoText: {
+    fontSize: 13,
+    color: '#666',
+    marginLeft: 6,
+    flex: 1,
+  },
+  bottomRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 6,
+  },
+  statusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 12,
+  },
   courtAddress: {
     fontSize: 13,
     color: '#666',
