@@ -191,12 +191,19 @@ export default function CourtDetailsScreen() {
           <View style={[styles.activityBadge, { backgroundColor: playerColor }]}>
             <Ionicons name="people" size={32} color="#FFF" />
             <Text style={styles.playerCountLarge}>{court.currentPlayers}</Text>
-            <Text style={styles.playerLabel}>Players</Text>
+            <Text style={styles.playerLabel}>Players Now</Text>
           </View>
 
           <View style={styles.statusContainer}>
             <View style={[styles.statusDot, { backgroundColor: playerColor }]} />
             <Text style={styles.statusText}>{playerStatus}</Text>
+          </View>
+
+          <View style={styles.averageContainer}>
+            <Ionicons name="bar-chart-outline" size={20} color="#888" />
+            <Text style={styles.averageText}>
+              Typically {court.averagePlayers} players at this court
+            </Text>
           </View>
 
           {!user?.isPublic && (
