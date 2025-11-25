@@ -27,35 +27,39 @@ export default function ProfileScreen() {
   
   // Generate diverse pixel art avatar options - 20 avatars with different races, genders, and styles
   const avatarOptions = [
-    // Different skin tones, hair styles, and accessories for diversity
-    { seed: 'avatar1', backgroundColor: 'FFD5B4' }, // Light skin tone
-    { seed: 'avatar2', backgroundColor: 'F1C27D' }, // Medium light
-    { seed: 'avatar3', backgroundColor: 'E0AC69' }, // Medium
-    { seed: 'avatar4', backgroundColor: 'C68642' }, // Medium dark
-    { seed: 'avatar5', backgroundColor: '8D5524' }, // Dark
-    { seed: 'avatar6', backgroundColor: 'FFDBAC' }, // Light with different style
-    { seed: 'avatar7', backgroundColor: 'F0C8A0' }, // Medium light with accessories
-    { seed: 'avatar8', backgroundColor: 'D2A679' }, // Medium with different hair
-    { seed: 'avatar9', backgroundColor: 'B08862' }, // Medium dark female
-    { seed: 'avatar10', backgroundColor: '704D3A' }, // Dark male
-    { seed: 'avatar11', backgroundColor: 'FFE0BD' }, // Female light
-    { seed: 'avatar12', backgroundColor: 'EDB98A' }, // Female medium
-    { seed: 'avatar13', backgroundColor: 'D19D6F' }, // Female medium dark
-    { seed: 'avatar14', backgroundColor: 'A17350' }, // Male medium dark
-    { seed: 'avatar15', backgroundColor: '634332' }, // Male dark
-    { seed: 'avatar16', backgroundColor: 'FFDFC4' }, // Different style light
-    { seed: 'avatar17', backgroundColor: 'E6B88F' }, // Different style medium
-    { seed: 'avatar18', backgroundColor: 'C99A6E' }, // Different style medium dark
-    { seed: 'avatar19', backgroundColor: '9F7A5C' }, // Different accessories dark
-    { seed: 'avatar20', backgroundColor: '5C3D2E' }, // Diverse style very dark
+    { seed: 'avatar1', backgroundColor: 'FFD5B4' },
+    { seed: 'avatar2', backgroundColor: 'F1C27D' },
+    { seed: 'avatar3', backgroundColor: 'E0AC69' },
+    { seed: 'avatar4', backgroundColor: 'C68642' },
+    { seed: 'avatar5', backgroundColor: '8D5524' },
+    { seed: 'avatar6', backgroundColor: 'FFDBAC' },
+    { seed: 'avatar7', backgroundColor: 'F0C8A0' },
+    { seed: 'avatar8', backgroundColor: 'D2A679' },
+    { seed: 'avatar9', backgroundColor: 'B08862' },
+    { seed: 'avatar10', backgroundColor: '704D3A' },
+    { seed: 'avatar11', backgroundColor: 'FFE0BD' },
+    { seed: 'avatar12', backgroundColor: 'EDB98A' },
+    { seed: 'avatar13', backgroundColor: 'D19D6F' },
+    { seed: 'avatar14', backgroundColor: 'A17350' },
+    { seed: 'avatar15', backgroundColor: '634332' },
+    { seed: 'avatar16', backgroundColor: 'FFDFC4' },
+    { seed: 'avatar17', backgroundColor: 'E6B88F' },
+    { seed: 'avatar18', backgroundColor: 'C99A6E' },
+    { seed: 'avatar19', backgroundColor: '9F7A5C' },
+    { seed: 'avatar20', backgroundColor: '5C3D2E' },
   ];
   
   const generateAvatarUrl = (seed: string, backgroundColor: string) => {
     return `https://api.dicebear.com/7.x/pixel-art/png?seed=${seed}&size=200&backgroundColor=${backgroundColor}`;
   };
 
-  const getInitials = (username: string) => {
-    return username.substring(0, 2).toUpperCase();
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map((word) => word[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   const handleSelectAvatar = async (avatarUrl: string) => {
@@ -112,8 +116,8 @@ export default function ProfileScreen() {
         {
           text: 'Logout',
           style: 'destructive',
-          onPress: async () => {
-            await logout();
+          onPress: () => {
+            logout();
             router.replace('/auth/login');
           },
         },
@@ -121,98 +125,124 @@ export default function ProfileScreen() {
     );
   };
 
-  if (!user) return null;
-
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.profileHeader}>
-        <TouchableOpacity 
-          style={styles.avatarContainer} 
-          onPress={() => setShowAvatarModal(true)} 
-          disabled={uploading}
-        >
-          {user.profilePic ? (
-            <Image source={{ uri: user.profilePic }} style={styles.avatar} />
-          ) : (
-            <View style={styles.avatarPlaceholder}>
-              <Text style={styles.avatarText}>{getInitials(user.username)}</Text>
+    <View style={styles.container}>
+      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+        {/* Profile Header */}
+        <View style={styles.profileHeader}>
+          <TouchableOpacity 
+            style={styles.avatarContainer} 
+            onPress={() => setShowAvatarModal(true)} 
+            disabled={uploading}
+          >
+            {user.profilePic ? (
+              <Image source={{ uri: user.profilePic }} style={styles.avatar} />
+            ) : (
+              <View style={styles.avatarPlaceholder}>
+                <Text style={styles.avatarText}>{getInitials(user.username)}</Text>
+              </View>
+            )}
+            <View style={styles.editIconContainer}>
+              <Ionicons name="image-outline" size={18} color="#FFF" />
             </View>
-          )}
-          <View style={styles.editIconContainer}>
-            <Ionicons name="image-outline" size={20} color="#FFF" />
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
-        <Text style={styles.username}>{user.username}</Text>
-        <Text style={styles.email}>{user.email}</Text>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Privacy Settings</Text>
-        
-        <View style={styles.settingItem}>
-          <View style={styles.settingInfo}>
-            <View style={styles.settingIcon}>
-              <Ionicons 
-                name={user.isPublic ? "eye" : "eye-off"} 
-                size={24} 
-                color={user.isPublic ? "#4CAF50" : "#FF6B35"} 
-              />
-            </View>
-            <View style={styles.settingText}>
-              <Text style={styles.settingTitle}>
-                {user.isPublic ? "Public Profile" : "Private Profile"}
-              </Text>
-              <Text style={styles.settingDescription}>
-                {user.isPublic 
-                  ? "You are visible to others and counted in court player totals"
-                  : "You are hidden from others and not counted in player totals"}
-              </Text>
-            </View>
-          </View>
-          <Switch
-            value={user.isPublic}
-            onValueChange={handleTogglePrivacy}
-            trackColor={{ false: '#767577', true: '#4CAF50' }}
-            thumbColor={user.isPublic ? '#FFF' : '#f4f3f4'}
-          />
+          <Text style={styles.username}>{user.username}</Text>
+          <Text style={styles.email}>{user.email}</Text>
         </View>
-      </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Account</Text>
-        
-        <TouchableOpacity style={styles.menuItem}>
-          <View style={styles.menuIcon}>
-            <Ionicons name="person-outline" size={24} color="#FFF" />
+        {/* Stats Section */}
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <Text style={styles.statValue}>127</Text>
+            <Text style={styles.statLabel}>Followers</Text>
           </View>
-          <Text style={styles.menuText}>Edit Profile</Text>
-          <Ionicons name="chevron-forward" size={24} color="#888" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem}>
-          <View style={styles.menuIcon}>
-            <Ionicons name="settings-outline" size={24} color="#FFF" />
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <Text style={styles.statValue}>48</Text>
+            <Text style={styles.statLabel}>Games</Text>
           </View>
-          <Text style={styles.menuText}>Settings</Text>
-          <Ionicons name="chevron-forward" size={24} color="#888" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem}>
-          <View style={styles.menuIcon}>
-            <Ionicons name="help-circle-outline" size={24} color="#FFF" />
+          <View style={styles.statDivider} />
+          <View style={styles.statItem}>
+            <Text style={styles.statValue}>32</Text>
+            <Text style={styles.statLabel}>Wins</Text>
           </View>
-          <Text style={styles.menuText}>Help & Support</Text>
-          <Ionicons name="chevron-forward" size={24} color="#888" />
-        </TouchableOpacity>
-      </View>
+        </View>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Ionicons name="log-out-outline" size={24} color="#FFF" />
-        <Text style={styles.logoutText}>Logout</Text>
-      </TouchableOpacity>
+        {/* Menu Items */}
+        <View style={styles.menuContainer}>
+          {/* Privacy Toggle */}
+          <View style={styles.menuItem}>
+            <View style={styles.menuItemLeft}>
+              <View style={styles.iconCircle}>
+                <Ionicons 
+                  name={user.isPublic ? 'globe-outline' : 'lock-closed-outline'} 
+                  size={20} 
+                  color="#000" 
+                />
+              </View>
+              <View style={styles.menuTextContainer}>
+                <Text style={styles.menuTitle}>Public Profile</Text>
+                <Text style={styles.menuSubtitle}>
+                  {user.isPublic ? 'You are visible to others' : 'Your profile is private'}
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={user.isPublic}
+              onValueChange={handleTogglePrivacy}
+              trackColor={{ false: '#D1D1D1', true: Colors.primary }}
+              thumbColor="#FFF"
+            />
+          </View>
 
-      <Text style={styles.version}>Version 1.0.0</Text>
+          {/* Edit Profile */}
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={styles.menuItemLeft}>
+              <View style={styles.iconCircle}>
+                <Ionicons name="person-outline" size={20} color="#000" />
+              </View>
+              <Text style={styles.menuTitle}>Edit Profile</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
+
+          {/* Settings */}
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={styles.menuItemLeft}>
+              <View style={styles.iconCircle}>
+                <Ionicons name="settings-outline" size={20} color="#000" />
+              </View>
+              <Text style={styles.menuTitle}>Settings</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
+
+          {/* Help & Support */}
+          <TouchableOpacity style={styles.menuItem}>
+            <View style={styles.menuItemLeft}>
+              <View style={styles.iconCircle}>
+                <Ionicons name="help-circle-outline" size={20} color="#000" />
+              </View>
+              <Text style={styles.menuTitle}>Help & Support</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
+
+          {/* Logout */}
+          <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+            <View style={styles.menuItemLeft}>
+              <View style={[styles.iconCircle, styles.logoutIconCircle]}>
+                <Ionicons name="log-out-outline" size={20} color="#FF3B30" />
+              </View>
+              <Text style={[styles.menuTitle, styles.logoutText]}>Logout</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.version}>Version 1.0.0</Text>
+      </ScrollView>
 
       {/* Avatar Selection Modal */}
       <Modal
@@ -229,7 +259,7 @@ export default function ProfileScreen() {
                 style={styles.closeButton}
                 onPress={() => setShowAvatarModal(false)}
               >
-                <Ionicons name="close" size={28} color="#FFF" />
+                <Ionicons name="close" size={28} color="#000" />
               </TouchableOpacity>
             </View>
 
@@ -261,173 +291,164 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#FFFFFF',
   },
   content: {
+    flex: 1,
+  },
+  contentContainer: {
     paddingBottom: 40,
   },
   profileHeader: {
     alignItems: 'center',
     paddingVertical: 32,
+    paddingHorizontal: Spacing.md,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: '#F0F0F0',
   },
   avatarContainer: {
     position: 'relative',
     marginBottom: 16,
   },
   avatar: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#333',
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#F5F5F5',
   },
   avatarPlaceholder: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarText: {
-    fontSize: 40,
+    fontSize: 36,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: '#FFF',
   },
   editIconContainer: {
     position: 'absolute',
     bottom: 0,
     right: 0,
     backgroundColor: Colors.primary,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
-    borderColor: Colors.background,
+    borderColor: '#FFFFFF',
   },
   username: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#000',
     marginBottom: 4,
   },
   email: {
-    fontSize: 16,
-    color: '#888',
-  },
-  section: {
-    paddingVertical: 24,
-    paddingHorizontal: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
-  sectionTitle: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#888',
-    textTransform: 'uppercase',
-    marginBottom: 16,
-    letterSpacing: 1,
+    color: '#666',
   },
-  settingItem: {
+  statsContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#1A1A1A',
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#333',
+    paddingVertical: 24,
+    paddingHorizontal: Spacing.md,
+    marginHorizontal: Spacing.md,
+    marginTop: Spacing.lg,
+    backgroundColor: '#F8F8F8',
+    borderRadius: BorderRadius.lg,
   },
-  settingInfo: {
-    flexDirection: 'row',
+  statItem: {
     alignItems: 'center',
     flex: 1,
-    marginRight: 16,
   },
-  settingIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#2A2A2A',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
+  statDivider: {
+    width: 1,
+    height: 40,
+    backgroundColor: '#E0E0E0',
   },
-  settingText: {
-    flex: 1,
-  },
-  settingTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#FFF',
+  statValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#000',
     marginBottom: 4,
   },
-  settingDescription: {
-    fontSize: 12,
-    color: '#888',
-    lineHeight: 16,
+  statLabel: {
+    fontSize: 13,
+    color: '#666',
+  },
+  menuContainer: {
+    marginTop: Spacing.lg,
+    paddingHorizontal: Spacing.md,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#222',
+    paddingHorizontal: Spacing.md,
+    backgroundColor: '#F8F8F8',
+    borderRadius: BorderRadius.md,
+    marginBottom: Spacing.sm,
   },
-  menuIcon: {
+  menuItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  iconCircle: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: Spacing.md,
   },
-  menuText: {
+  logoutIconCircle: {
+    backgroundColor: '#FFE5E5',
+  },
+  menuTextContainer: {
     flex: 1,
-    fontSize: 16,
-    color: '#FFF',
   },
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#D32F2F',
-    marginHorizontal: 16,
-    marginTop: 24,
-    padding: 16,
-    borderRadius: 12,
-    gap: 8,
+  menuTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+  },
+  menuSubtitle: {
+    fontSize: 13,
+    color: '#666',
+    marginTop: 2,
   },
   logoutText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#FFF',
+    color: '#FF3B30',
   },
   version: {
     textAlign: 'center',
-    fontSize: 14,
-    color: '#555',
-    marginTop: 24,
+    fontSize: 13,
+    color: '#999',
+    marginTop: 32,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 8,
@@ -441,12 +462,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: '#F0F0F0',
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#000',
   },
   closeButton: {
     width: 44,
@@ -454,11 +475,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 22,
-    backgroundColor: '#2A2A2A',
+    backgroundColor: '#F5F5F5',
   },
   modalSubtitle: {
     fontSize: 14,
-    color: '#888',
+    color: '#666',
     textAlign: 'center',
     paddingHorizontal: 20,
     paddingVertical: 12,
@@ -472,10 +493,10 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     margin: '1%',
     borderRadius: 12,
-    backgroundColor: '#2A2A2A',
+    backgroundColor: '#F5F5F5',
     overflow: 'hidden',
     borderWidth: 2,
-    borderColor: '#333',
+    borderColor: '#E0E0E0',
   },
   avatarOptionImage: {
     width: '100%',
