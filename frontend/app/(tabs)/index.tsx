@@ -210,7 +210,6 @@ export default function CourtsScreen() {
 
       <MapView
         style={styles.map}
-        provider={PROVIDER_GOOGLE}
         initialRegion={{
           latitude: 29.7604,
           longitude: -95.3698,
@@ -220,18 +219,6 @@ export default function CourtsScreen() {
         showsUserLocation
         showsMyLocationButton
       >
-        {/* Heatmap Overlay */}
-        <Heatmap
-          points={heatmapPoints}
-          opacity={0.7}
-          radius={50}
-          gradient={{
-            colors: ['#4A90E2', '#50C878', '#FFD700', '#FF8C00', '#FF0000'],
-            startPoints: [0.1, 0.25, 0.5, 0.75, 1.0],
-            colorMapSize: 256
-          }}
-        />
-
         {/* Court Markers */}
         {filteredCourts.map((court) => (
           <Marker
@@ -241,6 +228,8 @@ export default function CourtsScreen() {
               longitude: court.longitude,
             }}
             onPress={() => setSelectedCourt(court)}
+            title={court.name}
+            description={`${court.currentPlayers} players`}
           >
             <View style={styles.markerContainer}>
               <View style={styles.playerBadge}>
