@@ -166,7 +166,11 @@ export default function ProfileScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.profileHeader}>
-        <TouchableOpacity style={styles.avatarContainer} onPress={pickImage} disabled={uploading}>
+        <TouchableOpacity 
+          style={styles.avatarContainer} 
+          onPress={() => setShowAvatarModal(true)} 
+          disabled={uploading}
+        >
           {user.profilePic ? (
             <Image source={{ uri: user.profilePic }} style={styles.avatar} />
           ) : (
@@ -175,7 +179,7 @@ export default function ProfileScreen() {
             </View>
           )}
           <View style={styles.editIconContainer}>
-            <Ionicons name="camera" size={20} color="#FFF" />
+            <Ionicons name="image-outline" size={20} color="#FFF" />
           </View>
         </TouchableOpacity>
 
