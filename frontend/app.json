@@ -33,6 +33,19 @@
           "resizeMode": "contain",
           "backgroundColor": "#000"
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to show nearby basketball courts.",
+          "locationWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to show nearby basketball courts."
+        }
+      ],
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsDownloadToken": "pk.eyJ1IjoiZG9ueWV3dWUiLCJhIjoiY21ocmFzOGJ5MHVjMTJscHZoZHluemk2bSJ9.QmlFz7e8-_GhVHz2zveGFQ"
+        }
       ]
     ],
     "experiments": {
