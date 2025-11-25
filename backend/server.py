@@ -137,6 +137,13 @@ class ConversationResponse(BaseModel):
     timestamp: datetime
     unreadCount: int
 
+class FriendRequest(BaseModel):
+    toUserId: str
+
+class FriendRequestResponse(BaseModel):
+    status: str
+    message: str
+
 # Initialize Houston courts data
 async def initialize_courts():
     count = await db.courts.count_documents({})
