@@ -52,7 +52,6 @@ export default function Login() {
             style={styles.logo}
             resizeMode="contain"
           />
-          <Text style={styles.subtitle}>Find your game</Text>
         </View>
 
         {/* Login Form */}
