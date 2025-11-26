@@ -338,17 +338,45 @@ const styles = StyleSheet.create({
     color: '#000',
     marginBottom: 20,
   },
+  activityRow: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 20,
+  },
+  activityItem: {
+    flex: 1,
+    alignItems: 'center',
+  },
   activityBadge: {
     alignItems: 'center',
-    paddingVertical: 24,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
     borderRadius: 12,
-    marginBottom: 16,
+    marginBottom: 12,
+    width: '100%',
+  },
+  activityDivider: {
+    width: 1,
+    backgroundColor: '#DDD',
+    marginVertical: 10,
   },
   playerCountLarge: {
-    fontSize: 48,
+    fontSize: 36,
     fontWeight: 'bold',
     color: '#FFF',
     marginTop: 8,
+  },
+  activityLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#000',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  activitySubtext: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
   },
   playerLabel: {
     fontSize: 16,
