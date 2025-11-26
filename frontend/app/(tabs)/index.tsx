@@ -151,13 +151,23 @@ export default function CourtsScreen() {
   const renderCourtItem = ({ item }: { item: Court }) => {
     const distance = getDistance(item);
     const playerColor = getPlayerColor(item.currentPlayers);
+    const isRecommended = item.id === recommendedCourtId;
 
     return (
       <TouchableOpacity
-        style={styles.courtCard}
+        style={[styles.courtCard, isRecommended && styles.recommendedCard]}
         onPress={() => router.push(`/court/${item.id}`)}
         activeOpacity={0.7}
       >
+        {/* Recommended Badge */}
+        {isRecommended && (
+          <View style={styles.recommendedBadge}>
+            <Ionicons name="star" size={12} color="#FFD700" />
+            <Text style={styles.recommendedText}>Recommended Court</Text>
+            <Text style={styles.confidenceText}>{predictionConfidence}%</Text>
+          </View>
+        )}
+
         {/* Court Details */}
         <View style={styles.courtDetails}>
           <Text style={styles.courtName} numberOfLines={1}>{item.name}</Text>
