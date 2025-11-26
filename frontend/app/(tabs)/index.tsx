@@ -44,12 +44,16 @@ export default function CourtsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCourt, setSelectedCourt] = useState<Court | null>(null);
   const [showMap, setShowMap] = useState(Platform.OS !== 'web'); // Show map on mobile, list on web
+  const [recommendedCourtId, setRecommendedCourtId] = useState<string | null>(null);
+  const [predictionConfidence, setPredictionConfidence] = useState<number>(0);
+  const [predictionReasoning, setPredictionReasoning] = useState<string>('');
   const { token, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     getLocation();
     fetchCourts();
+    fetchRecommendedCourt();
   }, []);
 
   const getLocation = async () => {
