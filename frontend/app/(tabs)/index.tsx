@@ -429,10 +429,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF9E6',
     borderWidth: 2,
     borderColor: '#FFD700',
+    marginTop: 20,
   },
   recommendedBadge: {
     position: 'absolute',
-    top: -10,
+    top: -12,
     left: 12,
     flexDirection: 'row',
     alignItems: 'center',
