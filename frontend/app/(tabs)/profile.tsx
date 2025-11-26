@@ -182,10 +182,23 @@ export default function ProfileScreen() {
 
         {/* Stats Section */}
         <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
+          <TouchableOpacity 
+            style={styles.statItem}
+            onPress={() => router.push('/network/connections')}
+          >
             <Text style={styles.statValue}>{networkCount}</Text>
             <Text style={styles.statLabel}>Network</Text>
-          </View>
+          </TouchableOpacity>
+          
+          <View style={styles.statDivider} />
+          
+          <TouchableOpacity 
+            style={styles.statItem}
+            onPress={() => router.push('/network/recent-players')}
+          >
+            <Text style={styles.statValue}>{recentPlayersCount}</Text>
+            <Text style={styles.statLabel}>Recent Players</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Menu Items */}
