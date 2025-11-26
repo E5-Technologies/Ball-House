@@ -83,6 +83,27 @@ export default function CourtsScreen() {
     }
   };
 
+  const fetchRecommendedCourt = async () => {
+    try {
+      // Get user location for better prediction
+      let lat = location?.coords.latitude;
+      let lon = location?.coords.longitude;
+      
+      const url = lat && lon 
+        ? `${API_URL}/api/courts/predict/recommended?latitude=${lat}&longitude=${lon}`
+        : `${API_URL}/api/courts/predict/recommended`;
+      
+      const response = await axios.get(url);
+      setRecommendedCourtId(response.data.recommendedCourtId);
+      setPredictionConfidence(response.data.confidenceScore);
+      setPredictionReasoning(response.data.reasoning);
+      console.log('Recommended court:', response.data);
+    } catch (error) {
+      console.error('Error fetching recommendation:', error);
+      // Fail silently - recommendation is optional feature
+    }
+  };
+
   const getPlayerColor = (count: number) => {
     if (count === 0) return Colors.heatEmpty;
     if (count <= 5) return Colors.heatLow;
