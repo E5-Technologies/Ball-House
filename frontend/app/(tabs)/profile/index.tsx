@@ -184,7 +184,7 @@ export default function ProfileScreen() {
         <View style={styles.statsContainer}>
           <TouchableOpacity 
             style={styles.statItem}
-            onPress={() => router.push('/network/connections')}
+            onPress={() => router.push('/(tabs)/profile/connections')}
           >
             <Text style={styles.statValue}>{networkCount}</Text>
             <Text style={styles.statLabel}>Network</Text>
@@ -194,7 +194,7 @@ export default function ProfileScreen() {
           
           <TouchableOpacity 
             style={styles.statItem}
-            onPress={() => router.push('/network/recent-players')}
+            onPress={() => router.push('/(tabs)/profile/recent-players')}
           >
             <Text style={styles.statValue}>{recentPlayersCount}</Text>
             <Text style={styles.statLabel}>Recent Players</Text>
