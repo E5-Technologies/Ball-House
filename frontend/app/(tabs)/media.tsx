@@ -199,18 +199,32 @@ export default function MediaScreen() {
           <Ionicons name="play-circle" size={50} color="white" style={styles.playIcon} />
         </View>
 
-        {/* Like Button */}
-        <TouchableOpacity
-          style={styles.likeButton}
-          onPress={() => toggleLike(item.id)}
-        >
-          <Ionicons
-            name={isLiked ? 'heart' : 'heart-outline'}
-            size={20}
-            color="#FF0000"
-          />
-          <Text style={styles.likeCount}>{displayLikes}</Text>
-        </TouchableOpacity>
+        {/* Action Buttons Container */}
+        <View style={styles.actionButtons}>
+          {/* Like Button */}
+          <TouchableOpacity
+            style={styles.likeButton}
+            onPress={() => toggleLike(item.id)}
+          >
+            <Ionicons
+              name={isLiked ? 'heart' : 'heart-outline'}
+              size={20}
+              color="#FF0000"
+            />
+            <Text style={styles.likeCount}>{displayLikes}</Text>
+          </TouchableOpacity>
+
+          {/* Share Button */}
+          <TouchableOpacity
+            style={styles.shareButton}
+            onPress={() => {
+              setSelectedVideo(item);
+              setShowShareModal(true);
+            }}
+          >
+            <Ionicons name="share-outline" size={20} color="#4A90E2" />
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
     );
   };
