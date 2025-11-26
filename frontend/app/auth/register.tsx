@@ -135,24 +135,25 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 48,
+    marginBottom: 32,
   },
-  backButton: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    padding: 8,
+  logo: {
+    width: 200,
+    height: 80,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#FFF',
-    marginTop: 16,
+    marginTop: 24,
+    marginBottom: 8,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
     color: '#888',
-    marginTop: 8,
+    marginBottom: 32,
+    textAlign: 'center',
   },
   form: {
     width: '100%',
