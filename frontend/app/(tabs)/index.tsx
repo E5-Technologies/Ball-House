@@ -133,13 +133,6 @@ export default function CourtsScreen() {
         onPress={() => router.push(`/court/${item.id}`)}
         activeOpacity={0.7}
       >
-        {/* Court Icon Circle */}
-        <View style={styles.courtIconContainer}>
-          <View style={styles.iconCircle}>
-            <Ionicons name="people" size={32} color={Colors.primary} />
-          </View>
-        </View>
-
         {/* Court Details */}
         <View style={styles.courtDetails}>
           <Text style={styles.courtName} numberOfLines={1}>{item.name}</Text>
