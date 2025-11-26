@@ -934,6 +934,186 @@ async def get_youtube_videos(query: str = "NBA basketball highlights"):
         logging.error(f"YouTube API error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# Court Prediction AI Endpoint
+@api_router.get("/courts/predict/recommended")
+async def get_recommended_court(
+    latitude: Optional[float] = None,
+    longitude: Optional[float] = None
+):
+    """
+    AI-powered court recommendation based on:
+    - Current weather conditions
+    - Time of day and day of week
+    - Historical player patterns
+    - Social media activity (mocked for MVP)
+    - User location
+    """
+    try:
+        # Get environment variables
+        weather_api_key = os.environ.get('OPENWEATHER_API_KEY')
+        openai_key = os.environ.get('EMERGENT_LLM_KEY')
+        
+        if not weather_api_key or not openai_key:
+            raise HTTPException(status_code=500, detail="API keys not configured")
+        
+        # Use default LA coordinates if not provided
+        if not latitude or not longitude:
+            latitude = 34.0522  # Los Angeles
+            longitude = -118.2437
+        
+        # 1. Fetch current weather
+        weather_url = f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={weather_api_key}&units=imperial"
+        
+        async with httpx.AsyncClient() as client:
+            weather_response = await client.get(weather_url)
+            weather_data = weather_response.json()
+        
+        weather_condition = weather_data.get("weather", [{}])[0].get("main", "Clear")
+        temperature = weather_data.get("main", {}).get("temp", 70)
+        
+        # 2. Get current time info
+        now = datetime.now()
+        day_of_week = now.strftime("%A")
+        hour = now.hour
+        time_of_day = "morning" if 6 <= hour < 12 else "afternoon" if 12 <= hour < 17 else "evening" if 17 <= hour < 21 else "night"
+        is_weekend = now.weekday() >= 5
+        
+        # 3. Get all courts
+        courts = await db.courts.find().to_list(1000)
+        
+        # 4. Add mock social media activity scores (0-100)
+        import random
+        random.seed(now.day)  # Consistent for the day
+        for court in courts:
+            court["socialMediaScore"] = random.randint(20, 95)
+            court["lastPostMinutesAgo"] = random.randint(15, 240)
+        
+        # 5. Prepare data for AI analysis
+        court_data_for_ai = []
+        for court in courts:
+            court_info = {
+                "name": court["name"],
+                "address": court["address"],
+                "currentPlayers": court.get("currentPlayers", 0),
+                "averagePlayers": court.get("averagePlayers", 12),
+                "rating": court["rating"],
+                "socialMediaScore": court["socialMediaScore"],
+                "lastPostMinutesAgo": court["lastPostMinutesAgo"]
+            }
+            court_data_for_ai.append(court_info)
+        
+        # 6. Use OpenAI GPT-5 to analyze and predict
+        ai_prompt = f"""You are an AI that predicts which basketball court will be most active based on multiple factors.
+
+Current Conditions:
+- Day: {day_of_week} ({'Weekend' if is_weekend else 'Weekday'})
+- Time: {time_of_day} ({hour}:00)
+- Weather: {weather_condition}, {temperature}°F
+
+Courts Data:
+{court_data_for_ai}
+
+Analysis Factors:
+1. Weather Impact: Good weather ({weather_condition}) increases outdoor activity
+2. Time Patterns: {time_of_day} on {day_of_week}
+3. Current Activity: Current players at each court
+4. Social Media: Recent posts indicate activity (lower minutes = more recent)
+5. Historical Average: Average players per court
+6. Rating: Higher rated courts attract more players
+
+Task: Analyze these factors and select THE SINGLE BEST court that will likely have the most players to play with. 
+Consider that players prefer:
+- Good weather conditions
+- Peak hours (evening/afternoon on weekends, evening on weekdays)
+- Courts with recent social media activity
+- Higher rated courts
+- Courts showing current activity or momentum
+
+Return ONLY a valid JSON object with this exact structure (no markdown, no code blocks):
+{{
+    "recommendedCourt": "EXACT court name from the list",
+    "confidenceScore": 75,
+    "reasoning": "Brief 2-sentence explanation focusing on the top 2-3 factors"
+}}"""
+
+        # Call OpenAI API with Emergent key
+        async with httpx.AsyncClient() as client:
+            ai_response = await client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {openai_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "model": "gpt-4",
+                    "messages": [
+                        {"role": "system", "content": "You are a basketball court activity prediction AI. Always respond with valid JSON only."},
+                        {"role": "user", "content": ai_prompt}
+                    ],
+                    "temperature": 0.7,
+                    "max_tokens": 300
+                },
+                timeout=30.0
+            )
+            
+            ai_data = ai_response.json()
+            ai_content = ai_data["choices"][0]["message"]["content"].strip()
+            
+            # Parse AI response (remove markdown if present)
+            if ai_content.startswith("```"):
+                ai_content = ai_content.split("```")[1]
+                if ai_content.startswith("json"):
+                    ai_content = ai_content[4:]
+                ai_content = ai_content.strip()
+            
+            import json
+            prediction = json.loads(ai_content)
+        
+        # 7. Find the recommended court
+        recommended_court_name = prediction["recommendedCourt"]
+        recommended_court = None
+        
+        for court in courts:
+            if court["name"].lower() == recommended_court_name.lower():
+                recommended_court = court
+                break
+        
+        if not recommended_court:
+            # Fallback: pick court with highest combined score
+            recommended_court = max(courts, key=lambda c: (c.get("currentPlayers", 0) * 2 + c.get("socialMediaScore", 50) + c.get("rating", 4) * 10))
+        
+        return {
+            "recommendedCourtId": str(recommended_court["_id"]),
+            "courtName": recommended_court["name"],
+            "confidenceScore": prediction.get("confidenceScore", 75),
+            "reasoning": prediction.get("reasoning", "Based on current conditions and activity patterns"),
+            "weather": {
+                "condition": weather_condition,
+                "temperature": temperature
+            },
+            "timeContext": {
+                "dayOfWeek": day_of_week,
+                "timeOfDay": time_of_day,
+                "isWeekend": is_weekend
+            }
+        }
+        
+    except Exception as e:
+        logging.error(f"Court prediction error: {str(e)}")
+        # Fallback: return court with most current players
+        courts = await db.courts.find().to_list(1000)
+        if courts:
+            best_court = max(courts, key=lambda c: c.get("currentPlayers", 0))
+            return {
+                "recommendedCourtId": str(best_court["_id"]),
+                "courtName": best_court["name"],
+                "confidenceScore": 60,
+                "reasoning": "Based on current player activity",
+                "weather": None,
+                "timeContext": None
+            }
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include the router in the main app
 app.include_router(api_router)
 
