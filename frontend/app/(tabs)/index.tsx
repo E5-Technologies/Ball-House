@@ -164,7 +164,6 @@ export default function CourtsScreen() {
           <View style={styles.recommendedBadge}>
             <Ionicons name="star" size={12} color="#FFD700" />
             <Text style={styles.recommendedText}>Recommended Court</Text>
-            <Text style={styles.confidenceText}>{predictionConfidence}%</Text>
           </View>
         )}
 
