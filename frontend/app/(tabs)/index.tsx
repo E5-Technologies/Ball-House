@@ -197,6 +197,12 @@ export default function CourtsScreen() {
             <Text style={styles.infoText}>{item.hours}</Text>
           </View>
 
+          {/* Average Players */}
+          <View style={styles.infoRow}>
+            <Ionicons name="people-outline" size={14} color="#666" />
+            <Text style={styles.infoText}>Avg: {item.averagePlayers} players</Text>
+          </View>
+
           {/* Player Count Badge and Distance */}
           <View style={styles.bottomRow}>
             <View style={[styles.playerCountBadge, { backgroundColor: playerColor }]}>
