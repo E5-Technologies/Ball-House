@@ -1912,10 +1912,60 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Health check endpoint for Kubernetes probes
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for liveness probe"""
+    return {"status": "healthy", "service": "ball-house-api"}
+
+@app.get("/ready")
+async def readiness_check():
+    """Readiness check endpoint - verifies database connection"""
+    try:
+        # Ping database to check connection
+        await db.command('ping')
+        return {"status": "ready", "database": "connected"}
+    except Exception as e:
+        logging.error(f"Readiness check failed: {str(e)}")
+        raise HTTPException(status_code=503, detail="Database not ready")
+
 @app.on_event("startup")
 async def startup_event():
-    await initialize_courts()
+    """
+    Non-blocking startup - initialize database in background
+    This prevents deployment timeouts in Kubernetes
+    """
+    try:
+        # Log startup
+        logging.info("Ball House API starting up...")
+        
+        # Verify database connection
+        await db.command('ping')
+        logging.info("Database connection verified")
+        
+        # Initialize courts in background (non-blocking)
+        import asyncio
+        asyncio.create_task(initialize_courts_background())
+        
+        logging.info("Startup complete - courts initialization running in background")
+    except Exception as e:
+        logging.error(f"Startup error: {str(e)}")
+        # Don't fail startup - let health checks handle it
+        pass
+
+async def initialize_courts_background():
+    """Background task to initialize courts without blocking startup"""
+    try:
+        await initialize_courts()
+        logging.info("Background courts initialization completed")
+    except Exception as e:
+        logging.error(f"Background courts initialization error: {str(e)}")
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    client.close()
+    """Clean shutdown of database connection"""
+    try:
+        client.close()
+        logging.info("Database connection closed")
+    except Exception as e:
+        logging.error(f"Shutdown error: {str(e)}")
